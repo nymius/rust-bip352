@@ -12,7 +12,7 @@ pub enum ParseError {
     /// The human readable prefix is not supported for silent payments
     UnknownHrp(UnknownHrpError),
     /// Some public key couldn't be derived from the provided payload
-    InvalidPubKey(bitcoin::secp256k1::Error),
+    InvalidPubKey(secp256k1::Error),
     /// Silent payment code's network differs from required one
     UnknownNetwork(NetworkError),
 }
@@ -63,8 +63,8 @@ impl From<bech32::primitives::decode::CheckedHrpstringError> for ParseError {
     }
 }
 
-impl From<bitcoin::secp256k1::Error> for ParseError {
-    fn from(e: bitcoin::secp256k1::Error) -> Self {
+impl From<secp256k1::Error> for ParseError {
+    fn from(e: secp256k1::Error) -> Self {
         Self::InvalidPubKey(e)
     }
 }

@@ -5,17 +5,21 @@ pub use self::error::{NetworkError, ParseError, UnknownHrpError, VersionError};
 use core::fmt;
 use core::marker::PhantomData;
 
-use bitcoin::bech32::primitives::decode::AsciiToFe32Iter;
-use bitcoin::bech32::{
-    primitives::{
-        decode::CheckedHrpstring,
-        iter::{ByteIterExt, Fe32IterExt},
-        Bech32m,
+use bitcoin::{
+    bech32::{
+        primitives::{
+            decode::{AsciiToFe32Iter, CheckedHrpstring},
+            iter::{ByteIterExt, Fe32IterExt},
+            Bech32m,
+        },
+        Fe32, Hrp,
     },
-    Fe32, Hrp,
+    Network,
 };
-use bitcoin::secp256k1::PublicKey;
-use bitcoin::Network;
+use secp256k1::{
+    ffi::{CPtr, SilentpaymentsRecipient},
+    PublicKey,
+};
 
 /// Human readable prefix for encoding bitcoin Mainnet silent payment codes
 pub const SP: Hrp = Hrp::parse_unchecked("sp");
@@ -197,6 +201,14 @@ where
 {
     fn new(inner: SilentPaymentInner) -> Self {
         Self(inner, PhantomData, PhantomData)
+    }
+
+    fn create_recipient(self, index: usize) -> SilentpaymentsRecipient {
+        SilentpaymentsRecipient::new(
+            &unsafe { *self.0.scan_pubkey.as_c_ptr() },
+            &unsafe { *self.0.spend_pubkey.as_c_ptr() },
+            index,
+        )
     }
 }
 
