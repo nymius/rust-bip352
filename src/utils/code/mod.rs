@@ -171,10 +171,12 @@ impl<V> SilentPaymentCode<V, NetworkUnchecked>
 where
     V: VersionValidation,
 {
+    /// Check if the silent payment code is valid for the given network.
     pub fn is_valid_for_network(&self, n: Network) -> bool {
         self.0.hrp == SilentPaymentHrp::from_network(n)
     }
 
+    /// Checks whether network of this address is as required.
     #[inline]
     pub fn require_network(self, required: Network) -> Result<SilentPaymentCode, ParseError> {
         if self.is_valid_for_network(required) {
@@ -188,6 +190,10 @@ where
         }
     }
 
+    /// Marks, without any additional checks, network of this address as checked.
+    ///
+    /// Improper use of this method may lead to loss of funds. Reader will most likely prefer
+    /// [`require_network`](SilentPaymentCode<V, NetworkUnchecked>::require_network) as a safe variant.
     #[inline]
     pub fn assume_checked(self) -> SilentPaymentCode {
         SilentPaymentCode::new(self.0)
