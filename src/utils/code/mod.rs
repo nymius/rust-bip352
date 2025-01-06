@@ -155,8 +155,9 @@ impl SilentPaymentInner {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-// The `#[repr(transparent)]` attribute is used to guarantee the layout of the `SilentPaymentCode` struct. It
-// is an implementation detail and users should not rely on it in their code.
+// The `#[repr(transparent)]` attribute is used to guarantee the layout of the `SilentPaymentCode`
+// struct is the same as the layout of the `SilentPaymentInner` struct. It is an implementation
+// detail and users should not rely on it in their code.
 #[repr(transparent)]
 pub struct SilentPaymentCode<V = VersionStrict, N = NetworkChecked>(
     SilentPaymentInner,
